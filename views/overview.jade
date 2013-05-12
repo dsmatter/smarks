@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  include partial_userpane
+  include partial_searchbar
+  include partial_sidebar
+
+  - var klass = user.lists.length == 0 ? "hi" : "hidden"
+  #nolists(class=klass) You have no lists :(
+
+  #list-newest
+  //- = render :haml, :partial_bookmarks, :locals => { :id => 'newest', :title => 'Newest bookmarks', :bookmarks => -user.newest_bookmarks }
+  #lists
+    each list in user.lists
+      include partial_list
+  #addlist.button Add a new list

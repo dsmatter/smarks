@@ -1,0 +1,7 @@
+.list{:id => id}
+	.list_header
+		.title= title
+	.bookmarks
+		%ul
+			- bookmarks.each do |bookmark|
+				= render :haml, :partial_bookmark, :locals => { :bookmark => bookmark }

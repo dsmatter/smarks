@@ -1,0 +1,6 @@
+input(type='text', class='title', value=bookmark.title_with_tags)
+input(type='text', class='url', value=bookmark.url)
+.list_select
+  select(class='listselect')
+    for list in lists
+      option(value=list._id, selected=(bookmark.list == list)) #{list.title}

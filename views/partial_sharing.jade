@@ -1,0 +1,15 @@
+#sharing
+	.list{:id => "list-#{list.id}"}
+		%h2&= list.title
+		#users.users
+			- list.users.each do |user|
+				= render :haml, :partial_sharing_user, :locals => { :user => user }
+		#adduser.button add user
+		/ %form{:id => 'adduser_form', :class => 'hidden'}
+		#adduser_form.hidden
+			#add_friends.add_friends
+				- user.friends.each do |friend|
+					= render :haml, :partial_sharing_friend, :locals => { :user => friend }
+			#add_new_friend.add_new_friend
+				%label{:for => 'email'} Email
+				%input{:id => 'email', :name => 'email', :type => 'text'}

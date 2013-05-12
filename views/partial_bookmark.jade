@@ -1,0 +1,12 @@
+li(id="bookmark-#{bookmark._id}", class='bookmark')
+	.actions.right
+		.edit_bookmark edit
+		.delete_bookmark ✗
+	.link
+		a(href=bookmark.url, target='_blank') #{bookmark.title}
+	.tags
+		ul
+			for tag in bookmark.tags
+				li
+					a(href="/tags/#{tag}") @#{tag}
+	.timestamp #{bookmark.created_at}

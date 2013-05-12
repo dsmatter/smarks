@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	form(id='quick_add_form', method='POST', action='/bookmarks/quick_new')
+		label(for='list') List
+		.padding
+			select(name='list')
+				for list in lists
+					option(value=list._id, selected=(list._id == list_id)) #{list.title}
+		label(for='title') Title
+		input(id='title', name='title', type='text', value=title)
+		label(for='url') URL
+		input(name='url', type='text', value=url)
+		input(type='submit', value='add')

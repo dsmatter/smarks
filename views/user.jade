@@ -1,0 +1,28 @@
+extends layout
+
+block content
+	#user.form
+		h2 User info
+		form(id='user_form', method='POST', action='/user')
+			.username
+				label(for='username') Username
+				input(name='username', type='text', value=user.username, disabled='true')
+				.status.fail ✗
+			.passphrase
+				label(for='passphrase') Password
+				input(name='passphrase', type='password')
+				.status.fail ✗
+			.passphrase_confirmation
+				label(for='passphrase_confirmation') Password confirmation
+				input(name='passphrase_confirmation', type='password')
+				.status.fail ✗
+			.email
+				label(for='email') Email
+				input(name='email', type='text', value=user.email)
+				.status.fail ✗
+			input(type='submit', value='Update')
+	#tokens
+		h2 Tokens
+		for token in user.tokens
+			include partial_token
+	#addtoken.button Add new token

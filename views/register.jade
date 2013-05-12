@@ -1,0 +1,19 @@
+#registration.form
+	%form{:id => 'registration_form', :method => 'POST', :action => '/register'}
+		.username
+			%label{:for => 'username'} Username
+			%input{:name => 'username', :type => 'text'}
+			.status.fail ✗
+		.passphrase
+			%label{:for => 'passphrase'} Password
+			%input{:name => 'passphrase', :type => 'password'}
+			.status.fail ✗
+		.passphrase_confirmation
+			%label{:for => 'passphrase_confirmation'} Password confirmation
+			%input{:name => 'passphrase_confirmation', :type => 'password'}
+			.status.fail ✗
+		.email
+			%label{:for => 'email'} Email
+			%input{:name => 'email', :type => 'text'}
+			.status.fail ✗
+		%input{:type => 'submit', :value => 'Register'}
