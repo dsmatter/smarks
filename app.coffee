@@ -21,29 +21,40 @@ app.use express.bodyParser()
 app.use express.cookieParser()
 app.use express.cookieSession(secret: session.read_secret())
 app.use express.methodOverride()
-app.use auth.middleware()
 app.use app.router
 app.use express.static(path.join(__dirname, "public"))
 app.use express.errorHandler() if "development" is app.get("env")
 
-app.get "/", overview.get
+app.get "/", [auth.check, overview.get]
 app.get "/login", login.get
 app.post "/login", login.post
 app.get "/logout", (req, res) ->
   req.session = null
   res.redirect "/login"
-app.get "/user", user.get
-app.post "/user", user.post
+app.get "/user", [auth.check, user.get]
+app.post "/user", [auth.check, user.post]
 
-app.get "/new_list", lists.create
-app.delete "/list/:id", lists.remove
-app.post "/list/:id", lists.post
+app.get "/new_list", [auth.check, lists.create]
+app.get "/list/:id", [auth.check, lists.get]
+app.delete "/list/:id", [auth.check, lists.remove]
+app.post "/list/:id", [auth.check, lists.post]
 
-app.post "/bookmark/new", bookmarks.create
-app.delete "/bookmark/:id", bookmarks.remove
-app.get "/bookmark/:id", bookmarks.get
-app.post "/bookmark/:id", bookmarks.post
-app.get "/quick_new", bookmarks.quick_get
+app.post "/bookmark/new", [auth.check, bookmarks.create]
+app.delete "/bookmark/:id", [auth.check, bookmarks.remove]
+app.get "/bookmark/:id", [auth.check, bookmarks.get]
+app.post "/bookmark/:id", [auth.check, bookmarks.post]
+app.get "/bookmarks/quick_new", [auth.check, bookmarks.quick_get]
+app.post "/bookmarks/quick_new", [auth.check, bookmarks.quick_post]
+app.get "/bookmark/:bookmark_id/move/:list_id", [auth.check, bookmarks.move]
+
+app.get "/lists/sharing/:id", [auth.check, lists.sharing]
+app.get "/lists/sharing/:list_id/add", [auth.check, lists.sharing_add]
+app.delete "/lists/sharing/:list_id/user/:user_id", [auth.check, lists.sharing_delete]
+
+app.get "/tags/:tag", [auth.check, bookmarks.get_by_tag]
+
+app.get "/success", (req, res) ->
+  res.render "success"
 
 # Start the server
 http.createServer(app).listen app.get("port"), ->

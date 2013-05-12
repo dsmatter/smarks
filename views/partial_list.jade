@@ -6,6 +6,8 @@
 					.title #{list.title}
 				td
 					.actions.right
+						.edit #{list.users.length} user#{list.users.length > 1 ? 's' : ''}
+						a(href="javascript:window.location = 'http://bm.smattr.de/bookmarks/quick_new?title=' + encodeURIComponent(document.title) + '&url=' + escape(window.location) + '&list=#{list._id}'", class='bookmarklet') bookmarklet
 						.delete
 							.confirm unsubscribe
 							.cancel.hidden cancel
@@ -15,4 +17,4 @@
 			li(id="nobookmarks-#{list._id}", class=klass) No bookmarks yet :(
 			for bookmark in list.bookmarks
 				include partial_bookmark
-	.addbookmark.button add bookmark
+	.addbookmark.button Add a new bookmark

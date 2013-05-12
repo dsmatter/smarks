@@ -3,4 +3,4 @@ input(type='text', class='url', value=bookmark.url)
 .list_select
   select(class='listselect')
     for list in lists
-      option(value=list._id, selected=(bookmark.list == list)) #{list.title}
+      option(value=list._id, selected=(bookmark.list_id == list._id)) #{list.title}

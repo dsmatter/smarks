@@ -1,20 +1,8 @@
 crypto = require "crypto"
 
-auth_routes = [
-  /^\/$/
-  /\/api\//
-]
-
-middleware = ->
-  (req, res, next) ->
-    for route in auth_routes
-      # FIXME: token
-      if req.path.match(route)? and not req.session.user?
-        res.redirect "/login"
-        return
-
-    # Green light
-    next()
+check = (req, res, next) ->
+  return res.redirect "/login" unless req.session.user?
+  next()
 
 calculate_hash = (pass, salt) ->
   shasum = crypto.createHash "sha1"
@@ -28,6 +16,6 @@ authenticate = (user, pass) ->
   else
     null
 
-exports.middleware = middleware
+exports.check = check
 exports.calculate_hash = calculate_hash
 exports.authenticate = authenticate

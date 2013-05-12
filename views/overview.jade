@@ -9,7 +9,11 @@ block content
   #nolists(class=klass) You have no lists :(
 
   #list-newest
-  //- = render :haml, :partial_bookmarks, :locals => { :id => 'newest', :title => 'Newest bookmarks', :bookmarks => -user.newest_bookmarks }
+    - var id = "newest"
+    - var title = "Newest Bookmarks"
+    - var bookmarks = user.newest
+    include partial_bookmarks
+
   #lists
     each list in user.lists
       include partial_list

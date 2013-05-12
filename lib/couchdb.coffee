@@ -13,4 +13,9 @@ exports.connect = (callback) ->
       callback err
 
     cached_db = nano.db.use "bookmarks"
+    patch_db_obj cached_db
     callback? null, cached_db
+
+patch_db_obj = (db) ->
+  db.list = (design, list, view, options, callback) ->
+    db.get "_design/#{design}/_list/#{list}/#{view}", options, callback
