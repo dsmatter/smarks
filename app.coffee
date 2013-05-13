@@ -6,6 +6,7 @@ login     = require "./routes/login"
 user      = require "./routes/user"
 lists     = require "./routes/lists"
 bookmarks = require "./routes/bookmarks"
+api       = require "./routes/api"
 session   = require "./lib/session"
 auth      = require "./lib/auth"
 app       = express()
@@ -52,9 +53,18 @@ app.get "/lists/sharing/:list_id/add", [auth.check, lists.sharing_add]
 app.delete "/lists/sharing/:list_id/user/:user_id", [auth.check, lists.sharing_delete]
 
 app.get "/tags/:tag", [auth.check, bookmarks.get_by_tag]
+app.get "/newest", [auth.check, overview.get_newest]
+
+app.get "/tokens/new", [auth.check, user.new_token]
+app.delete "/tokens/:id", [auth.check, user.delete_token]
 
 app.get "/success", (req, res) ->
   res.render "success"
+
+app.get "/api/lists", [auth.check, api.get_lists]
+app.get "/api/bookmarks", [auth.check, api.get_all_bookmarks]
+app.get "/api/bookmarks/add", [auth.check, api.add_bookmark]
+app.get "/api/bookmarks/:id", [auth.check, api.get_bookmarks]
 
 # Start the server
 http.createServer(app).listen app.get("port"), ->

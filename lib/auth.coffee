@@ -1,8 +1,20 @@
 crypto = require "crypto"
+users  = require "./model/user"
 
 check = (req, res, next) ->
-  return res.redirect "/login" unless req.session.user?
-  next()
+  # Valid session
+  return next() if req.session.user
+
+  # Try to authenticate by token
+  token = req.param "token"
+  return res.redirect "/login" unless token
+
+  users.get_by_token token, (err, user) ->
+    return res.send 403 if err? or not user?
+
+    # Valid token
+    req.session.user = user._id
+    next()
 
 calculate_hash = (pass, salt) ->
   shasum = crypto.createHash "sha1"

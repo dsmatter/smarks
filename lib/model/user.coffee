@@ -24,7 +24,13 @@ validate = (user, callback) ->
 
 get_by_email = (email, callback) ->
   couchdb.connect onerr callback, (db) ->
-    db.view "users", "by_email", keys: [email], onerr callback, (body) ->
+    db.view "users", "by_email", key: email, onerr callback, (body) ->
+      user = body.rows[0]?.value
+      callback null, user
+
+get_by_token = (token, callback) ->
+  couchdb.connect onerr callback, (db) ->
+    db.view "users", "by_token", key: token, onerr callback, (body) ->
       user = body.rows[0]?.value
       callback null, user
 
@@ -50,9 +56,20 @@ fetch_friends = (user, callback) ->
         user.friends = friends
         callback null, friends
 
+generate_token = (user, callback) ->
+  user_id = user._id ? user
+  token = crypto.randomBytes(20).toString "hex"
+
+  couchdb.connect onerr callback, (db) ->
+    exports.get user_id, onerr callback, (user) ->
+      user.tokens.push token
+      exports.insert user, callback
+
 crud.infect exports, validate
 exports.create = create
 exports.validate = validate
 exports.get_by_email = get_by_email
+exports.get_by_token = get_by_token
 exports.fetch_lists = fetch_lists
 exports.fetch_friends = fetch_friends
+exports.generate_token = generate_token

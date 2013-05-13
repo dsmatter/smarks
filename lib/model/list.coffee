@@ -17,9 +17,11 @@ validate = (list, callback) ->
   callback null, list
 
 fetch_bookmarks = (list, callback) ->
+  list_id = list._id ? list
+
   couchdb.connect onerr callback, (db) ->
     db.list "bookmarks", "sort_by_date", "by_list",
-      key: list._id
+      key: list_id
     , onerr callback, (body) ->
         bookmarks = body.rows.map (row) -> row.value
         list.bookmarks = bookmarks

@@ -136,6 +136,11 @@ add_views = (db) ->
         map: (doc) ->
           return unless doc.type is "user"
           emit doc.email, doc
+      by_token:
+        map: (doc) ->
+          return unless doc.type is "user"
+          for token in doc.tokens
+            emit token, doc
 
   overwrite_item db, "_design/bookmarks", design_bookmarks, (err) ->
     throw err if err?
