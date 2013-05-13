@@ -1,18 +1,11 @@
 sqlite  = require "sqlite3"
 moment  = require "moment"
-couchdb = require "../lib/couchdb"
+nano    = require("nano")("http://localhost:5984")
 
 source_db_path = process.argv[2]
 throw new Error "No database file given" unless source_db_path?
 
 sql_db = new sqlite.Database source_db_path, sqlite.OPEN_READONLY
-
-couchdb.connect (err, db) ->
-  throw err if err?
-  add_users db
-  add_lists db
-  add_bookmarks db
-  add_views db
 
 moment_format = "YYYY-MM-DD HH:mm"
 format_created_at = (doc) ->
@@ -72,84 +65,6 @@ add_bookmarks = (db) ->
       overwrite_item db, id, bookmark, (err) ->
         throw err if err?
 
-add_views = (db) ->
-  sort_by = (key, descending=false) ->
-    f = (key, descending) ->
-      (head, req) ->
-        rows = []
-        while row = getRow()
-          rows.push row
-        rows = rows.sort (a, b) ->
-          result =
-            if a.value[key] < b.value[key]
-              -1
-            else if a.value[key] > b.value[key]
-              1
-            else
-              0
-          result *= -1 if descending
-          result
-        head.rows = rows
-        send JSON.stringify(head)
-
-    # Call f with our parameters
-    "(#{f.toString()})('#{key}', #{descending})"
-
-  design_bookmarks =
-    views:
-      by_list:
-        map: (doc) ->
-          return unless doc.type is "bookmark"
-          emit doc.list_id, doc
-      by_tag_list:
-        map: (doc) ->
-          return unless doc.type is "bookmark"
-          for tag in doc.tags
-            emit [tag, doc.list_id], doc
-    lists:
-      sort_by_date: sort_by("created_at", true)
-
-  design_lists =
-    views:
-      by_user:
-        map: (doc) ->
-          return unless doc.type is "list"
-          for user in doc.users
-            emit user, doc
-    lists:
-      sort_by_date: sort_by("created_at", true)
-      sort_by_title: sort_by("title")
-
-  design_friends =
-    views:
-      by_user:
-        map: (doc) ->
-          return unless doc.type is "list"
-          for user in doc.users
-            for friend in doc.users
-              emit [user, friend], 1 unless user is friend
-        reduce: "_count"
-
-  design_users =
-    views:
-      by_email:
-        map: (doc) ->
-          return unless doc.type is "user"
-          emit doc.email, doc
-      by_token:
-        map: (doc) ->
-          return unless doc.type is "user"
-          for token in doc.tokens
-            emit token, doc
-
-  overwrite_item db, "_design/bookmarks", design_bookmarks, (err) ->
-    throw err if err?
-  overwrite_item db, "_design/lists", design_lists, (err) ->
-    throw err if err?
-  overwrite_item db, "_design/users", design_users, (err) ->
-    throw err if err?
-  overwrite_item db, "_design/friends", design_friends, (err) ->
-    throw err if err?
 
 # Helper function to overwrite an existing document
 overwrite_item = (db, id, obj, callback) ->
@@ -157,3 +72,10 @@ overwrite_item = (db, id, obj, callback) ->
     if old_obj?
       obj._rev = old_obj._rev
     db.insert obj, id, callback
+
+
+### Run import ###
+db = nano.db.use "bookmarks"
+add_users db
+add_lists db
+add_bookmarks db

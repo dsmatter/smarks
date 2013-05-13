@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "sqlite3": "*",
-    "moment": "*"
+    "moment": "*",
+    "nano": "*"
   }
 }
