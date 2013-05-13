@@ -73,9 +73,22 @@ overwrite_item = (db, id, obj, callback) ->
       obj._rev = old_obj._rev
     db.insert obj, id, callback
 
+do_import = ->
+  console.log "Importing..."
+  db = nano.db.use "bookmarks"
+  add_users db
+  add_lists db
+  add_bookmarks db
+
+module.exports = do_import
 
 ### Run import ###
-db = nano.db.use "bookmarks"
-add_users db
-add_lists db
-add_bookmarks db
+if require.main is module
+  nano.db.get "bookmarks", (err) ->
+    if err?
+      # Init database
+      init = require "./init_db"
+      init ->
+        do_import()
+    else
+      do_import()
