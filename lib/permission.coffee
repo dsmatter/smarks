@@ -3,10 +3,11 @@ onerr = require "./errorhandler"
 db    = require("./couchdb")()
 
 check_list = (list, user, callback) ->
-  user = user.username ? user
+  user = user._id ? user
 
   if list instanceof Object and list.users instanceof Array
-    callback null, _.contains list.users, user
+    granted = _.contains list.users, user
+    callback null, granted
     return
 
   db.view "lists", "by_user", keys: [user], onerr callback, (body) ->

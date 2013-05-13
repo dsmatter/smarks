@@ -8,6 +8,7 @@ _          = require "underscore"
 create = (req, res, next) ->
   new_list = lists.create req.session.user
   lists.insert new_list, onerr next, (new_list) ->
+    new_list.bookmarks = []
     res.render "partial_list", list: new_list
 
 get = (req, res, next) ->
@@ -22,9 +23,9 @@ remove = (req, res, next) ->
 
     finalize = onerr next, -> res.end()
     if list.users.length == 0
-      list.destroy list, finalize
+      lists.destroy list, finalize
     else
-      list.insert list, finalize
+      lists.insert list, finalize
 
 post = (req, res, next) ->
   title = req.param "title"
@@ -32,14 +33,11 @@ post = (req, res, next) ->
     res.end()
     return
 
-  list.get req.param.id, onerr next, (list) ->
-    permission.check_list list, req.session.user, onerr next, (allowed) ->
-      res.send 403
-      return
-
-    list.title = title
-    lists.insert list, onerr next, ->
-      res.end()
+  lists.get req.params.id, onerr next, (list) ->
+    permission.assert_list res, list, req.session.user, onerr next, ->
+      list.title = title
+      lists.insert list, onerr next, ->
+        res.end()
 
 sharing = (req, res, next) ->
   lists.get req.params.id, onerr next, (list) ->
