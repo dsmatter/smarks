@@ -296,6 +296,8 @@ var setupList = function(element) {
   element.find('.bookmark').each(function() {
     setupBookmark($(this));
   });
+
+  setupBookmarklets();
 };
 
 var showUserMenu = function() {
@@ -311,6 +313,13 @@ var setupSharingUser = function(element, listId) {
   element.find('.delete').click(function() {
     ajax($(this).closest('.user'), '/lists/sharing/' + listId + '/user/' + userId, 'DELETE').done(function() {
       element.fadeOut().remove();
+      ajax(element, '/lists/sharing/' + listId + '/friends', 'GET').done(function(friendsHtml) {
+        $("#add_friends").replaceWith(friendsHtml);
+        $('#sharing #add_friends .user').each(function() {
+          setupSharingFriend($(this), listId);
+        });
+        setupMouseOverFor($("#add_friends"));
+      });
       reloadList(listId);
     });
   });
@@ -324,6 +333,7 @@ var setupSharingFriend = function(element, listId) {
     ajax($(this).closest('.user'), '/lists/sharing/' + listId + '/add', 'GET', { user_id: userId }).done(function(newUserHtml) {
       $('#users').append(newUserHtml);
       setupSharingUser($('#sharing #users .user').last(), listId);
+      element.remove();
       $('#adduser_form #email').select();
       reloadList(listId);
     }).error(function() {

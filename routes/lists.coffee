@@ -43,6 +43,7 @@ sharing = (req, res, next) ->
   lists.get req.params.id, onerr next, (list) ->
     permission.assert_list res, list, req.session.user, onerr next, ->
       users.fetch_friends req.session.user, onerr next, (friends) ->
+        friends = _.difference friends, list.users
         res.render "partial_sharing", friends: friends, list: list
 
 sharing_add = (req, res, next) ->
@@ -52,7 +53,9 @@ sharing_add = (req, res, next) ->
   lists.get req.params.list_id, onerr next, (list) ->
     permission.assert_list res, list, req.session.user, onerr next, ->
       finalize = (new_user_id) ->
-        list.users.push new_user_id unless _.contains list.users, new_user_id
+        # Bad Request if user is already in list
+        return res.send 400 if _.contains list.users, new_user_id
+        list.users.push new_user_id
         lists.insert list, onerr next, (list) ->
           res.render "partial_sharing_user", user: new_user_id
 
@@ -63,6 +66,13 @@ sharing_add = (req, res, next) ->
       else
         users.get_by_email new_user_email, onerr next, (new_user) ->
           finalize new_user._id
+
+sharing_friends = (req, res, next) ->
+  lists.get req.params.id, onerr next, (list) ->
+    permission.assert_list res, list, req.session.user, onerr next, ->
+      users.fetch_friends req.session.user, onerr next, (friends) ->
+        friends = _.difference friends, list.users
+        res.render "partial_sharing_friends", friends: friends
 
 sharing_delete = (req, res, next) ->
   list_id = req.params.list_id
@@ -77,10 +87,11 @@ sharing_delete = (req, res, next) ->
       lists.insert list, onerr next, ->
         res.end()
 
-exports.create         = create
-exports.get            = get
-exports.remove         = remove
-exports.post           = post
-exports.sharing        = sharing
-exports.sharing_add    = sharing_add
-exports.sharing_delete = sharing_delete
+exports.create          = create
+exports.get             = get
+exports.remove          = remove
+exports.post            = post
+exports.sharing         = sharing
+exports.sharing_add     = sharing_add
+exports.sharing_delete  = sharing_delete
+exports.sharing_friends = sharing_friends

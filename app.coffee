@@ -51,6 +51,7 @@ app.get "/bookmark/:bookmark_id/move/:list_id", [auth.check, bookmarks.move]
 app.get "/lists/sharing/:id", [auth.check, lists.sharing]
 app.get "/lists/sharing/:list_id/add", [auth.check, lists.sharing_add]
 app.delete "/lists/sharing/:list_id/user/:user_id", [auth.check, lists.sharing_delete]
+app.get "/lists/sharing/:id/friends", [auth.check, lists.sharing_friends]
 
 app.get "/tags/:tag", [auth.check, bookmarks.get_by_tag]
 app.get "/newest", [auth.check, overview.get_newest]
@@ -60,6 +61,8 @@ app.delete "/tokens/:id", [auth.check, user.delete_token]
 
 app.get "/success", (req, res) ->
   res.render "success"
+app.get "/register", (req, res) ->
+  res.render "register"
 
 app.get "/api/lists", [auth.check, api.get_lists]
 app.get "/api/bookmarks", [auth.check, api.get_all_bookmarks]
