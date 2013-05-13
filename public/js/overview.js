@@ -481,6 +481,15 @@ var setupOverview = function() {
   setupAddList();
   setupSearch();
   setupSidebar();
+  setupBookmarklets();
+};
+
+var setupBookmarklets = function() {
+  $(".bookmarklet").each(function() {
+    bm = $(this).attr("href");
+    bm = bm.replace("bm.smattr.de", window.location.host);
+    $(this).attr("href", bm);
+  });
 };
 
 var setupQuickNew = function() {
