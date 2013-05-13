@@ -1,8 +1,7 @@
-users   = require "../lib/model/user"
-couchdb = require "../lib/couchdb"
-auth    = require "../lib/auth"
-onerr   = require "../lib/errorhandler"
-_       = require "underscore"
+users = require "../lib/model/user"
+auth  = require "../lib/auth"
+onerr = require "../lib/errorhandler"
+_     = require "underscore"
 
 get = (req, res, next) ->
   users.get req.session.user, onerr next, (user) ->

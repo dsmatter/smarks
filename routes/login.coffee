@@ -1,6 +1,6 @@
-couchdb = require "../lib/couchdb"
-onerr   = require "../lib/errorhandler"
-auth    = require "../lib/auth"
+db    = require("../lib/couchdb")()
+onerr = require "../lib/errorhandler"
+auth  = require "../lib/auth"
 
 get = (req, res) ->
   res.render "login"
@@ -18,13 +18,12 @@ post = (req, res, next) ->
     res.redirect "/"
 
 authenticate = (username, pass, callback) ->
-  couchdb.connect onerr callback, (db) ->
-    db.get username, onerr callback, (user) ->
-      user = auth.authenticate user, pass
-      if user?
-        callback null, user
-      else
-        callback new Error "Auth failed"
+  db.get username, onerr callback, (user) ->
+    user = auth.authenticate user, pass
+    if user?
+      callback null, user
+    else
+      callback new Error "Auth failed"
 
 exports.get = get
 exports.post = post

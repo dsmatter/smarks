@@ -1,8 +1,8 @@
-crud     = require "./generic"
-couchdb  = require "../couchdb"
-onerr    = require "../errorhandler"
-date     = require "../date"
-crypto   = require "crypto"
+db     = require("../couchdb")()
+crud   = require "./generic"
+onerr  = require "../errorhandler"
+date   = require "../date"
+crypto = require "crypto"
 
 create = (user, title="New List") ->
   type: "list"
@@ -19,13 +19,12 @@ validate = (list, callback) ->
 fetch_bookmarks = (list, callback) ->
   list_id = list._id ? list
 
-  couchdb.connect onerr callback, (db) ->
-    db.list "bookmarks", "sort_by_date", "by_list",
-      key: list_id
-    , onerr callback, (body) ->
-        bookmarks = body.rows.map (row) -> row.value
-        list.bookmarks = bookmarks
-        callback null, bookmarks
+  db.list "bookmarks", "sort_by_date", "by_list",
+    key: list_id
+  , onerr callback, (body) ->
+      bookmarks = body.rows.map (row) -> row.value
+      list.bookmarks = bookmarks
+      callback null, bookmarks
 
 crud.infect exports, validate
 exports.create = create

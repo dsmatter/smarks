@@ -1,5 +1,5 @@
+db        = require("../lib/couchdb")()
 _         = require "underscore"
-couchdb   = require "../lib/couchdb"
 onerr     = require "../lib/errorhandler"
 users     = require "../lib/model/user"
 lists     = require "../lib/model/list"
@@ -23,15 +23,14 @@ get_all_bookmarks = (req, res, next) ->
       result[list.title] = []
 
     keys = lists.map (list) -> list._id
-    couchdb.connect onerr next, (db) ->
-      db.list "bookmarks", "sort_by_date", "by_list",
-        keys: keys
-      , onerr next, (body) ->
-          for row in body.rows
-            title = listid_title[row.key]
-            result[title].push bookmark_json row.value
+    db.list "bookmarks", "sort_by_date", "by_list",
+      keys: keys
+    , onerr next, (body) ->
+        for row in body.rows
+          title = listid_title[row.key]
+          result[title].push bookmark_json row.value
 
-          res.end JSON.stringify result
+        res.end JSON.stringify result
 
 get_bookmarks = (req, res, next) ->
   lists.fetch_bookmarks req.params.id, onerr next, (bookmarks) ->

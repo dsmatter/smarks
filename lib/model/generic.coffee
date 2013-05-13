@@ -1,20 +1,18 @@
-couchdb = require "../couchdb"
-onerr   = require "../errorhandler"
+db    = require("../couchdb")()
+onerr = require "../errorhandler"
 
 get = (validate) ->
   (id, callback) ->
-    couchdb.connect onerr callback, (db) ->
-      db.get id, onerr callback, (doc) ->
-        validate doc, callback
+    db.get id, onerr callback, (doc) ->
+      validate doc, callback
 
 insert = (validate) ->
   (doc, callback) ->
     validate doc, onerr callback, ->
-      couchdb.connect onerr callback, (db) ->
-        db.insert doc, onerr callback, (body) ->
-          doc._id = body.id
-          doc._rev = body.rev
-          callback null, doc
+      db.insert doc, onerr callback, (body) ->
+        doc._id = body.id
+        doc._rev = body.rev
+        callback null, doc
 
 update = (validate, get, insert) ->
   (id, changes, callback) ->
@@ -25,8 +23,7 @@ update = (validate, get, insert) ->
 
 destroy = ->
   (doc, callback) ->
-    couchdb.connect onerr callback, (db) ->
-      db.destroy doc._id, doc._rev, callback
+    db.destroy doc._id, doc._rev, callback
 
 infect = (exports, validate) ->
   exports.get = get validate

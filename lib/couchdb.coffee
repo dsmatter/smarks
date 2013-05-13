@@ -2,19 +2,11 @@ nano = require("nano")("http://localhost:5984")
 
 cached_db = null
 
-exports.connect = (callback) ->
-  if cached_db?
-    callback? null, cached_db
-    return
-
-  nano.db.create "bookmarks", (err) ->
-    if err? and err.error isnt "file_exists"
-      console.log "CouchDB connection failure"
-      callback err
-
-    cached_db = nano.db.use "bookmarks"
+module.exports = ->
+  unless cached_db?
+    cached_db = nano.use "bookmarks"
     patch_db_obj cached_db
-    callback? null, cached_db
+  cached_db
 
 patch_db_obj = (db) ->
   db.list = (design, list, view, options, callback) ->

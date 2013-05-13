@@ -2,7 +2,6 @@ users      = require "../lib/model/user"
 lists      = require "../lib/model/list"
 onerr      = require "../lib/errorhandler"
 permission = require "../lib/permission"
-couchdb    = require "../lib/couchdb"
 dateformat = require "dateformat"
 _          = require "underscore"
 
