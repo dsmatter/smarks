@@ -9,7 +9,7 @@ bookmarks = require "./routes/bookmarks"
 api       = require "./routes/api"
 session   = require "./lib/session"
 auth      = require "./lib/auth"
-uncache   = require("./lib/cache").invalidate_friend_overviews
+uncache   = require("./lib/cache").middleware_invalidate_overview
 app       = express()
 
 ### Configure express ###

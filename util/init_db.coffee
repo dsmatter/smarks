@@ -1,4 +1,5 @@
 nano = require("nano")("http://localhost:5984")
+_    = require "underscore"
 
 init = (name="bookmarks", callback) ->
   if typeof name is "function"
@@ -100,7 +101,7 @@ init = (name="bookmarks", callback) ->
       cache: design_cache
 
     # Insert design documents
-    counter = design_documents.length
+    counter = _.keys(design_documents).length
     finalize = (err) ->
       throw err if err?
       if --counter is 0

@@ -40,15 +40,21 @@ invalidate = (page, user, callback) ->
 
     db.insert cache_entry, callback
 
-invalidate_friend_overviews = (req, res, next) ->
-  users.fetch_friends req.session.user, onerr next, (friends) ->
-    friends.push req.session.user
+invalidate_friend_overviews = (user, callback) ->
+  user_id = user._id ? user
+
+  users.fetch_friends user_id, onerr callback, (friends) ->
+    friends.push user_id
     tasks = friends.map (user) ->
-      (callback) -> invalidate "overview", user, onerr next, callback
-    async.parallel tasks, -> next()
+      (c) -> invalidate "overview", user, onerr callback, c
+    async.parallel tasks, -> callback()
+
+middleware_invalidate_overview = (req, res, next) ->
+  invalidate_friend_overviews req.session.user, next
 
 exports.get = get
 exports.set = set
 exports.create = create
 exports.invalidate = invalidate
 exports.invalidate_friend_overviews = invalidate_friend_overviews
+exports.middleware_invalidate_overview = middleware_invalidate_overview
