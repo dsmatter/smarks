@@ -55,3 +55,17 @@ describe "cache:", ->
           expect(c.valid).to.equal false
           done()
 
+	it "should should set the cache to valid when updated", (done) ->
+		cache.set "overview", "user1", "bar", (err) ->
+			expect(err).not.to.exist
+
+			cache.get "overview", "user1", (err, entry) ->
+				expect(err).not.to.exist
+				expect(entry).to.exist
+				expect(entry.valid).to.equal true
+
+				cache.get "overview", "user2", (err, entry) ->
+					expect(err).not.to.exist
+					expect(entry.valid).to.equal false if entry?
+					done()
+
