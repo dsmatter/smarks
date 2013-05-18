@@ -2,9 +2,10 @@ nano = require("nano")("http://localhost:5984")
 
 cached_db = null
 
-module.exports = ->
+module.exports = (db) ->
   unless cached_db?
-    cached_db = nano.use "bookmarks"
+    db ?= "bookmarks"
+    cached_db = nano.use db
     patch_db_obj cached_db
   cached_db
 

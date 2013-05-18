@@ -1,13 +1,17 @@
 nano = require("nano")("http://localhost:5984")
 
-init = (callback) ->
-  nano.db.create "bookmarks", (err) ->
+init = (name, callback) ->
+  if typeof name is "function"
+    callback = name
+    name = "bookmarks"
+
+  nano.db.create name, (err) ->
     if err? and err.error isnt "file_exists"
       console.log "CouchDB connection failure"
       throw err
 
     console.log "Initializing database..."
-    db = nano.db.use "bookmarks"
+    db = nano.db.use name
 
     # Convenience function to create sorting list design documents
     sort_by = (key, descending=false) ->

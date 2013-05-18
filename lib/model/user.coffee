@@ -3,12 +3,13 @@ crud   = require "./generic"
 onerr  = require "../errorhandler"
 date   = require "../date"
 crypto = require "crypto"
+auth   = require "../auth"
 
 create = (name="user") ->
   _id: name
   type: "user"
   username: name
-  email: "user@domain.tld"
+  email: ""
   active: true
   tokens: []
   salt: crypto.randomBytes(10).toString "hex"
@@ -21,6 +22,9 @@ validate = (user, callback) ->
   return callback new Error "No salt" unless user.salt
   return callback new Error "No password" unless user.password
   callback null, user
+
+set_password = (user, pass) ->
+  user.password = auth.calculate_hash pass, user.salt
 
 get_by_email = (email, callback) ->
   db.view "users", "by_email", key: email, onerr callback, (body) ->
@@ -68,3 +72,4 @@ exports.get_by_token = get_by_token
 exports.fetch_lists = fetch_lists
 exports.fetch_friends = fetch_friends
 exports.generate_token = generate_token
+exports.set_password = set_password

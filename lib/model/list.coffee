@@ -7,7 +7,7 @@ crypto = require "crypto"
 create = (user, title="New List") ->
   type: "list"
   title: title
-  users: [user]
+  users: [user] if user?
   created_at: date.now()
 
 validate = (list, callback) ->
