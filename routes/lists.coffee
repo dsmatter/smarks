@@ -2,6 +2,7 @@ users      = require "../lib/model/user"
 lists      = require "../lib/model/list"
 onerr      = require "../lib/errorhandler"
 permission = require "../lib/permission"
+cache      = require "../lib/cache"
 dateformat = require "dateformat"
 _          = require "underscore"
 
@@ -57,6 +58,7 @@ sharing_add = (req, res, next) ->
         return res.send 400 if _.contains list.users, new_user_id
         list.users.push new_user_id
         lists.insert list, onerr next, (list) ->
+          cache.invalidate "overview", new_user_id, onerr next, -> # nop
           res.render "partial_sharing_user", user: new_user_id
 
       if new_user_id?

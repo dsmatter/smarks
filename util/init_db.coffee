@@ -1,6 +1,6 @@
 nano = require("nano")("http://localhost:5984")
 
-init = (name, callback) ->
+init = (name="bookmarks", callback) ->
   if typeof name is "function"
     callback = name
     name = "bookmarks"
@@ -85,16 +85,29 @@ init = (name, callback) ->
             for token in doc.tokens
               emit token, doc
 
-    counter = 4
+    design_cache =
+      views:
+        by_user_page:
+          map: (doc) ->
+            return unless doc.type is "cache"
+            emit [doc.user_id, doc.page], doc
+
+    design_documents =
+      bookmarks: design_bookmarks
+      lists: design_lists
+      users: design_users
+      friends: design_friends
+      cache: design_cache
+
+    # Insert design documents
+    counter = design_documents.length
     finalize = (err) ->
       throw err if err?
       if --counter is 0
         callback?()
 
-    overwrite_item db, "_design/bookmarks", design_bookmarks, finalize
-    overwrite_item db, "_design/lists", design_lists, finalize
-    overwrite_item db, "_design/users", design_users, finalize
-    overwrite_item db, "_design/friends", design_friends, finalize
+    for key of design_documents
+      overwrite_item db, "_design/#{key}", design_documents[key], finalize
 
   # Helper function to overwrite an existing document
   overwrite_item = (db, id, obj, callback) ->
