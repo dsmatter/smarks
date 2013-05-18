@@ -8,8 +8,8 @@ _         = require "underscore"
 
 get = (req, res, next) ->
   # Try cache
-  cache.get "overview", req.session.user, onerr next, (cache_entry) ->
-    if cache_entry?.valid
+  cache.get "overview", req.session.user, (err, cache_entry) ->
+    if not err? and cache_entry?.valid
       console.log "from cache"
       render_html res, cache_entry.content
       return
