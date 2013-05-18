@@ -22,7 +22,7 @@ new_bookmark = (user, bookmark, callback) ->
 
           opts = mailOpts()
           opts.to = user.email
-          opts.subject = "New bookmark in #{list.title}"
+          opts.subject = "[Bookmarks] New bookmark in #{list.title}"
           opts.text = bookmark.title + "\n\n" + bookmark.url
           console.log "Sending mail to #{opts.to}"
           transport.sendMail opts, (err) -> c err
@@ -30,4 +30,17 @@ new_bookmark = (user, bookmark, callback) ->
       console.log err
       callback?()
 
+new_list = (user, list, callback) ->
+  user_id = user._id ? user
+  users.get user_id, onerr callback, (user) ->
+    return callback() unless user? and user.email and user.email.indexOf("@") > 0
+
+    opts = mailOpts()
+    opts.to = user.email
+    opts.subject = "[Bookmarks] You were added to the list #{list.title}"
+    opts.text = "Have fun"
+    console.log "Sending mail to #{opts.to}"
+    transport.sendMail opts, callback
+
 exports.new_bookmark = new_bookmark
+exports.new_list = new_list
