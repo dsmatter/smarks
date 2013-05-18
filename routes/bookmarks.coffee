@@ -4,6 +4,7 @@ lists      = require "../lib/model/list"
 bookmarks  = require "../lib/model/bookmark"
 onerr      = require "../lib/errorhandler"
 permission = require "../lib/permission"
+mail       = require "../lib/mail"
 dateformat = require "dateformat"
 
 create = (req, res, next) ->
@@ -39,12 +40,14 @@ post = (req, res, next) ->
   return res.send 400 unless title_with_tags and url
 
   bookmarks.get req.params.id, onerr next, (bookmark) ->
-    permission.check_bookmark bookmark, req.session.user, onerr next, (allowed) ->
-      return res.send 403 unless allowed
+    permission.assert_bookmark res, bookmark, req.session.user, onerr next, ->
+      send_email = bookmark.title is "New Bookmark"
       bookmarks.set_title bookmark, title_with_tags
       bookmark.url = url
 
       bookmarks.insert bookmark, onerr next, (bookmark) ->
+        if send_email
+          mail.new_bookmark req.session.user, bookmark, -> # nop
         res.render "partial_bookmark", bookmark: bookmark
 
 quick_get = (req, res, next) ->
@@ -69,6 +72,7 @@ quick_post = (req, res, next) ->
     bookmarks.set_title bookmark, title_with_tags
 
     bookmarks.insert bookmark, onerr next, ->
+      mail.new_bookmark req.session.user, bookmark, -> # nop
       res.redirect "/success"
 
 move = (req, res, next) ->

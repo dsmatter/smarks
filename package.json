@@ -12,6 +12,7 @@
     "nano": "*",
     "async": "*",
     "dateformat": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "nodemailer": "*"
   }
 }
