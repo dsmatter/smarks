@@ -54,7 +54,7 @@ app.get "/lists/sharing/:list_id/add", [auth.check, uncache, lists.sharing_add]
 app.delete "/lists/sharing/:list_id/user/:user_id", [auth.check, uncache, lists.sharing_delete]
 app.get "/lists/sharing/:id/friends", [auth.check, lists.sharing_friends]
 
-app.get "/tags/:tag", [auth.check, bookmarks.get_by_tag]
+# app.get "/tags/:tag", [auth.check, bookmarks.get_by_tag]
 app.get "/newest", [auth.check, overview.get_newest]
 
 app.get "/tokens/new", [auth.check, uncache, user.new_token]
