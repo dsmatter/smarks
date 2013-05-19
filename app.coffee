@@ -67,7 +67,7 @@ app.get "/register", (req, res) ->
 
 app.get "/api/lists", [auth.check, api.get_lists]
 app.get "/api/bookmarks", [auth.check, api.get_all_bookmarks]
-app.get "/api/bookmarks/add", [auth.check, api.add_bookmark]
+app.get "/api/bookmarks/add", [auth.check, uncache, api.add_bookmark]
 app.get "/api/bookmarks/:id", [auth.check, api.get_bookmarks]
 
 # Start the server
