@@ -28,6 +28,7 @@ new_token = (req, res, next) ->
 
 delete_token = (req, res, next) ->
   users.get req.session.user, onerr next, (user) ->
+    return res.send 404 unless _.contains user.tokens, req.params.id
     user.tokens = _.without user.tokens, req.params.id
     users.insert user, onerr next, ->
       res.end()
