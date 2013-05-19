@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  script(src="/js/overview.js")
   include partial_userpane
   include partial_searchbar
   include partial_sidebar
@@ -9,10 +10,8 @@ block content
   #nolists(class=klass) You have no lists :(
 
   #list-newest
-    - var id = "newest"
-    - var title = "Newest Bookmarks"
     - var bookmarks = user.newest
-    include partial_bookmarks
+    include partial_newest
 
   #lists
     each list in user.lists

@@ -4,4 +4,8 @@
   .bookmarks
     ul
       for bookmark in bookmarks
+        - bookmark._prefix = prefix
+      for bookmark in bookmarks
         include partial_bookmark
+      for bookmark in bookmarks
+        - bookmark._prefix = null

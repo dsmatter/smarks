@@ -98,6 +98,7 @@ get_by_tag = (req, res, next) ->
       bookmarks: bookmarks
       title: "Tagged with #{req.params.tag}"
       id: req.params.tag
+      prefix: ""
 
 exports.create = create
 exports.remove = remove
