@@ -84,7 +84,7 @@ sharing_delete = (req, res, next) ->
   user_id = req.params.user_id
 
   # Can't delete yourself
-  res.send 400 if user_id is req.session.user
+  return res.send 400 if user_id is req.session.user
 
   lists.get list_id, onerr next, (list) ->
     permission.assert_list res, list, req.session.user, onerr next, ->
