@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  script $('input[name=user]').select();
+  script
+    $(document).ready(function() { $('input[name=user]').select(); });
   #login.form
     form(id='login_form', method='post', action='/login')
       label(for='user') Username
