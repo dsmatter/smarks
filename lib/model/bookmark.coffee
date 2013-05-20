@@ -23,6 +23,12 @@ validate = (bookmark, callback) ->
   return callback new Error "No title" unless bookmark.title
   return callback new Error "No url" unless bookmark.url
   return callback new Error "Tags null" unless bookmark.tags?
+
+  # Encode common characters
+  bookmark.url = bookmark.url.replace(/\ /g, "%20")
+                             .replace(/!/g, "%21")
+                             .replace(/\+/g, "%2B")
+
   callback null, bookmark
 
 get_by_tag_user = (tag, user, callback) ->
