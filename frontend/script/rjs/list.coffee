@@ -95,6 +95,11 @@ define ["ajax", "bookmark", "list_mixin", "selection"],
           bookmark_id = $(element).attr("id").replace "bookmark-", ""
           Bookmark.attachTo $(element), id: bookmark_id, list_id: @attr.id
 
+        @$node.find(".bookmarklet").each ->
+          url = $(@).attr "href"
+          url = url.replace "bm.smattr.de", window.location.host
+          $(@).attr "href", url
+
         Selection.setup @$node.find(".button")
         Selection.setup @$node.find(".title")
         @$node.find(".list_header .actions div").each ->
