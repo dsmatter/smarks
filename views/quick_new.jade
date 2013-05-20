@@ -1,6 +1,7 @@
 extends layout
 
 block content
+	script $('#title').select();
 	form(id='quick_add_form', method='POST', action='/bookmarks/quick_new')
 		label(for='list') List
 		.padding

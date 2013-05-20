@@ -70,6 +70,7 @@ sharing_add = (req, res, next) ->
           finalize new_user_id
       else
         users.get_by_email new_user_email, onerr next, (new_user) ->
+          return res.send 404 unless new_user
           finalize new_user._id
 
 sharing_friends = (req, res, next) ->

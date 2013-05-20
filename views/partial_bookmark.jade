@@ -1,12 +1,17 @@
-li(id="bookmark-#{bookmark._id}", class='bookmark')
+- var prefix = bookmark._prefix || ""
+li(id="#{prefix}bookmark-#{bookmark._id}", class='bookmark')
 	.actions.right
-		.edit_bookmark edit
-		.delete_bookmark ✗
+		if bookmark._prefix == null
+			.edit_bookmark edit
+			.delete_bookmark ✗
+		else
+			- var href = "#bookmark-" + bookmark._id
+			a(href=href) ➜
 	.link
 		a(href=bookmark.url, target='_blank') #{bookmark.title}
 	.tags
 		ul
 			for tag in bookmark.tags
 				li
-					a(href="/tags/#{tag}") @#{tag}
+					a(href="#") @#{tag}
 	.timestamp #{bookmark.created_at}

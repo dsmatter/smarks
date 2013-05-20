@@ -37,10 +37,7 @@ get = (req, res, next) ->
 
 get_newest = (req, res, next) ->
   bookmarks.get_newest req.session.user, 10, onerr next, (bookmarks) ->
-    res.render "partial_bookmarks",
-      id: "newest"
-      title: "Newest Bookmarks"
-      bookmarks: bookmarks
+    res.render "partial_newest", bookmarks: bookmarks
 
 render_html = (res, body) ->
   res.charset = "utf-8"
