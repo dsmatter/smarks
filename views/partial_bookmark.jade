@@ -6,7 +6,8 @@ li(id="#{prefix}bookmark-#{bookmark._id}", class='bookmark')
 			.delete_bookmark ✗
 		else
 			- var href = "#bookmark-" + bookmark._id
-			a(href=href) ➜
+			a(href=href)
+				i.icon-chevron-right.right
 	.link
 		a(href=bookmark.url, target='_blank') #{bookmark.title}
 	.tags
