@@ -22,3 +22,5 @@ define ->
       @select("input").keyup =>
         clearTimeout @timer if @timer?
         @timer = setTimeout (=> @search()), 300
+
+      @select("input").select()
