@@ -62,6 +62,7 @@ define ["ajax", "selection"], (ajax, Selection) ->
     @remove = (e) ->
       ajax @$node, "/bookmark/#{@attr.id}", type: "DELETE", =>
         @trigger "update_no_bookmarks", add: -1
+        @trigger "#newest", "refresh"
         @$node.fadeOut().remove()
         @teardown()
 

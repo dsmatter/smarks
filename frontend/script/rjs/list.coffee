@@ -36,6 +36,7 @@ define ["ajax", "bookmark", "list_mixin", "selection"],
         Bookmark.attachTo @$node.find("#bookmark-#{opts.id}"),
           id: opts.id
           list_id: @attr.id
+        @trigger "#newest", "refresh"
 
       @new_bookmark = ->
         ajax @$node, "/bookmark/new",
@@ -55,6 +56,7 @@ define ["ajax", "bookmark", "list_mixin", "selection"],
         ajax @$node, "/list/#{@attr.id}", type: "DELETE", =>
           @$node.fadeOut().remove()
           @trigger "#sidebar", "refresh"
+          @trigger "#newest", "refresh"
           @teardown()
 
       @edit_title = ->
