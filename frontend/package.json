@@ -1,0 +1,12 @@
+{
+  "name": "smarks-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "coffee-script": "*",
+    "uglify-js": "*",
+    "node-sass": "*",
+    "requirejs": "*",
+    "clean-css": "*"
+  }
+}

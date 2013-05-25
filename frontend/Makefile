@@ -1,3 +1,11 @@
+# Needed NPM binaries
+BIN_DIR=node_modules/.bin
+COFFEE=$(BIN_DIR)/coffee
+SCSS=$(BIN_DIR)/node-sass
+UGLIFYJS=$(BIN_DIR)/uglifyjs
+RJS=$(BIN_DIR)/r.js
+CLEANCSS=$(BIN_DIR)/cleancss
+
 PUBLIC_DIR=../public
 BUILD_DIR=build
 ASSETS_DIR=assets
@@ -19,7 +27,7 @@ CSS_ASSETS=$(COMPONENTS_DIR)/bootstrap/docs/assets/css/bootstrap.css \
 		       $(COMPONENTS_DIR)/jquery-ui/themes/cupertino/jquery-ui.min.css \
            $(COMPONENTS_DIR)/showLoading.css
 
-all: compile minify install
+all: compile minify install clean
 
 assets: js_assets css_assets
 compile: compile_style compile_script
@@ -27,29 +35,27 @@ minify: minify_style minify_script
 
 compile_script: $(SCRIPT_DIR)/*.coffee
 	mkdir -p $(BUILD_DIR)/js
-	coffee -c -o $(BUILD_DIR)/js $(SCRIPT_DIR)
+	$(COFFEE) -c -o $(BUILD_DIR)/js $(SCRIPT_DIR)
 
 compile_style: $(STYLE_DIR)/*.scss
 	mkdir -p $(BUILD_DIR)/css
-	scss --update $(STYLE_DIR)
-	mv $(STYLE_DIR)/*.css $(BUILD_DIR)/css
+	$(SCSS) $(STYLE_DIR)/style.scss $(BUILD_DIR)/css/style.css
 
 js_assets: $(JS_ASSETS)
 	mkdir -p $(BUILD_DIR)/js
-	uglifyjs $(JS_ASSETS) > $(BUILD_DIR)/js/assets.min.js
+	$(UGLIFYJS) $(JS_ASSETS) > $(BUILD_DIR)/js/assets.min.js
 
 css_assets: $(CSS_ASSETS)
 	mkdir -p $(BUILD_DIR)/css
-	cat $(CSS_ASSETS) | cleancss > $(BUILD_DIR)/css/assets.min.css
+	cat $(CSS_ASSETS) | $(CLEANCSS) > $(BUILD_DIR)/css/assets.min.css
 
 minify_script:
-	cd $(BUILD_DIR)/js; \
-	r.js -o baseUrl=rjs name=../user out=user.js; \
-	r.js -o baseUrl=rjs name=../overview out=overview.js
+	$(RJS) -o baseUrl=$(BUILD_DIR)/js/rjs name=../user out=$(BUILD_DIR)/js/user.js;
+	$(RJS) -o baseUrl=$(BUILD_DIR)/js/rjs name=../overview out=$(BUILD_DIR)/js/overview.js
 	rm -rf $(BUILD_DIR)/js/rjs
 
 minify_style:
-	cleancss -o $(BUILD_DIR)/css/style.css $(BUILD_DIR)/css/style.css
+	$(CLEANCSS) -o $(BUILD_DIR)/css/style.css $(BUILD_DIR)/css/style.css
 
 install:
 	cp -r $(BUILD_DIR)/js $(PUBLIC_DIR)
