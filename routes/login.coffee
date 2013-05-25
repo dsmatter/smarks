@@ -15,7 +15,9 @@ post = (req, res, next) ->
       return
 
     req.session.user = user.username
-    res.redirect "/"
+    res.writeHead 301,
+      Location: req.session?.saved_url ? "/"
+    res.end()
 
 authenticate = (username, pass, callback) ->
   db.get username, onerr callback, (user) ->

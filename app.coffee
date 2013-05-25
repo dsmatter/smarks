@@ -8,6 +8,7 @@ lists     = require "./routes/lists"
 bookmarks = require "./routes/bookmarks"
 api       = require "./routes/api"
 session   = require "./lib/session"
+cookie    = require "./lib/cookie"
 auth      = require "./lib/auth"
 uncache   = require("./lib/cache").middleware_invalidate_overview
 app       = express()
@@ -27,13 +28,13 @@ app.use app.router
 app.use express.static(path.join(__dirname, "public"))
 app.use express.errorHandler() if "development" is app.get("env")
 
-app.get "/", [auth.check, overview.get]
+app.get "/", [cookie.save_page, auth.check, overview.get]
 app.get "/login", login.get
 app.post "/login", login.post
 app.get "/logout", (req, res) ->
   req.session = null
   res.redirect "/login"
-app.get "/user", [auth.check, user.get]
+app.get "/user", [cookie.save_page, auth.check, user.get]
 app.post "/user", [auth.check, user.post]
 
 app.get "/new_list", [auth.check, uncache, lists.create]
@@ -45,7 +46,7 @@ app.post "/bookmark/new", [auth.check, uncache, bookmarks.create]
 app.delete "/bookmark/:id", [auth.check, uncache, bookmarks.remove]
 app.get "/bookmark/:id", [auth.check, bookmarks.get]
 app.post "/bookmark/:id", [auth.check, uncache, bookmarks.post]
-app.get "/bookmarks/quick_new", [auth.check, bookmarks.quick_get]
+app.get "/bookmarks/quick_new", [cookie.save_page, auth.check, bookmarks.quick_get]
 app.post "/bookmarks/quick_new", [auth.check, uncache, bookmarks.quick_post]
 app.get "/bookmark/:bookmark_id/move/:list_id", [auth.check, uncache, bookmarks.move]
 
