@@ -9,7 +9,7 @@ read_secret = ->
   else
     secret = generate_secret()
     fs.writeFileSync secret_path, secret
-    secret
+    secret.toString()
 
 generate_secret = ->
   console.log "Generating session secret..."
