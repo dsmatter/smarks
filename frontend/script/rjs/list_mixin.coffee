@@ -5,6 +5,14 @@ define ->
     @filter = (_, opts) ->
       return unless opts?.text?
 
+      # Special case for empty search string
+      # Otherwise a list w/o bookmarks wouldn't be shown
+      if opts.text is ""
+        @select("bookmark").show()
+        @$node.show()
+        @trigger "#sidebar", "refresh"
+        return
+
       text_matches = (a) ->
         a.toUpperCase().indexOf(opts.text.toUpperCase()) >= 0
 
