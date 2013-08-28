@@ -88,6 +88,11 @@ define ["ajax", "selection"], (ajax, Selection) ->
         @trigger "edit" unless @select("link").find("input").length > 0
       @select("tags").find("a").click (e) =>
         @trigger "#searchbar", "search", text: $(e.target).text()
+      @$node.hover (=>
+        @$node.addClass "selected"
+      ), (=>
+        @$node.removeClass "selected"
+      )
 
     @after "initialize", ->
       @init_triggers()
@@ -95,3 +100,4 @@ define ["ajax", "selection"], (ajax, Selection) ->
 
       @$node.find(".actions div").each ->
         Selection.setup $(@)
+

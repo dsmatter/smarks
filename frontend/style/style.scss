@@ -184,8 +184,13 @@ input[type=password] {
 
 			li {
 				font-size: 1.2em;
-				padding: 5px;
+				padding: 10px;
 				margin-left: -20px;
+
+        &.selected {
+          background-color: $area-back-color;
+          border-radius: 5px;
+        }
 
 				a {
 					color: $bookmark-color;
