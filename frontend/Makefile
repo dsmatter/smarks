@@ -27,11 +27,12 @@ CSS_ASSETS=$(COMPONENTS_DIR)/bootstrap/docs/assets/css/bootstrap.css \
 		       $(COMPONENTS_DIR)/jquery-ui/themes/cupertino/jquery-ui.min.css \
            $(COMPONENTS_DIR)/showLoading.css
 
-all: compile minify install clean
+all: assets compile minify package install clean
 
 assets: js_assets css_assets
 compile: compile_style compile_script
 minify: minify_style minify_script
+package: package_script
 
 compile_script: $(SCRIPT_DIR)/*.coffee
 	mkdir -p $(BUILD_DIR)/js
@@ -56,6 +57,10 @@ minify_script:
 
 minify_style:
 	$(CLEANCSS) -o $(BUILD_DIR)/css/style.css $(BUILD_DIR)/css/style.css
+
+package_script:
+	$(UGLIFYJS) -o $(BUILD_DIR)/js/overview.js $(BUILD_DIR)/js/assets.min.js $(BUILD_DIR)/js/overview.js
+	$(UGLIFYJS) -o $(BUILD_DIR)/js/user.js $(BUILD_DIR)/js/assets.min.js $(BUILD_DIR)/js/user.js
 
 install:
 	cp -r $(BUILD_DIR)/js $(PUBLIC_DIR)
