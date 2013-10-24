@@ -33,7 +33,7 @@ define ->
       @$node.show()
 
       $(window).resize =>
-        if document.width > 1200
+        if $(document).width() > 1200
           @$node.show()
           @position()
         else
