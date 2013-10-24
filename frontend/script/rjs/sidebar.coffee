@@ -32,6 +32,13 @@ define ->
       $("body").scrollspy "refresh"
       @$node.show()
 
+      $(window).resize =>
+        if document.width > 1200
+          @$node.show()
+          @position()
+        else
+          @$node.hide()
+
     @fill = ->
       $(".list:visible").each (_, elem) =>
         elem = $(elem)
