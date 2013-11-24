@@ -83,6 +83,11 @@ define ["ajax", "selection"], (ajax, Selection) ->
       @on "update", @update
 
     @init_events = ->
+      @$node.dblclick =>
+        # Open bookmark in new tab and delete it
+        url = @select("link").find("a").attr "href"
+        window.open url, "_blank"
+        @trigger "delete_bookmark"
       @select("remove").click => @trigger "delete_bookmark"
       @select("edit").click =>
         @trigger "edit" unless @select("link").find("input").length > 0
