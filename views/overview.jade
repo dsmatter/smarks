@@ -6,9 +6,6 @@ block content
   include partial_searchbar
   include partial_sidebar
 
-  - var klass = user.lists.length == 0 ? "hi" : "hidden"
-  #nolists(class=klass) You have no lists :(
-
   #list-newest
     - var bookmarks = user.newest
     include partial_newest
