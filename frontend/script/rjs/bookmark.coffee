@@ -71,6 +71,9 @@ define ["ajax", "selection"], (ajax, Selection) ->
         @select("link").html html
         BookmarkEdit.attachTo @select "link"
 
+    @editModeActive = ->
+      @select("link").find("input").length > 0
+
     @defaultAttrs
       remove: ".delete_bookmark"
       edit: ".edit_bookmark"
@@ -84,13 +87,16 @@ define ["ajax", "selection"], (ajax, Selection) ->
 
     @init_events = ->
       @$node.dblclick =>
+        # Disable functionality in edit mode
+        return if @editModeActive()
+
         # Open bookmark in new tab and delete it
         url = @select("link").find("a").attr "href"
         window.open url, "_blank"
         @trigger "delete_bookmark"
       @select("remove").click => @trigger "delete_bookmark"
       @select("edit").click =>
-        @trigger "edit" unless @select("link").find("input").length > 0
+        @trigger "edit" unless @editModeActive()
       @select("tags").find("a").click (e) =>
         @trigger "#searchbar", "search", text: $(e.target).text()
       @$node.hover (=>
