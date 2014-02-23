@@ -61,8 +61,6 @@ app.get "/newest", [auth.check, overview.get_newest]
 app.get "/tokens/new", [auth.check, uncache, user.new_token]
 app.delete "/tokens/:id", [auth.check, uncache, user.delete_token]
 
-app.get "/success", (req, res) ->
-  res.render "success"
 app.get "/register", (req, res) ->
   res.render "register"
 

@@ -73,7 +73,7 @@ quick_post = (req, res, next) ->
 
     bookmarks.insert bookmark, onerr next, ->
       mail.new_bookmark req.session.user, bookmark, -> # nop
-      res.redirect "/success"
+      res.render "success", url: url
 
 move = (req, res, next) ->
   bookmark_id = req.params.bookmark_id
