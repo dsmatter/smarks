@@ -64,7 +64,7 @@ define ["ajax", "selection"], (ajax, Selection) ->
         @trigger "update_no_bookmarks", add: -1
         @trigger "#newest", "refresh"
         @$node.fadeOut().remove()
-        @teardown()
+        #@teardown()
 
     @edit = ->
       ajax @$node, "/bookmark/#{@attr.id}", (html) =>
