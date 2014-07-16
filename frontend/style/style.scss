@@ -429,6 +429,11 @@ input[type="submit"] {
 			color: $link-hover-color;
 		}
 	}
+	.qr {
+		width: 200px;
+		height: 200px;
+		padding: 20px;
+	}
 }
 
 // Helpers

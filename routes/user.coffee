@@ -1,12 +1,15 @@
 users = require "../lib/model/user"
 auth  = require "../lib/auth"
 onerr = require "../lib/errorhandler"
+qr    = require "qr-image"
+async = require "async"
 _     = require "underscore"
 
 get = (req, res, next) ->
   users.get req.session.user, onerr next, (user) ->
-    console.log user
-    res.render "user", user: user
+    async.map user.tokens, addQR, onerr next, (tokens) ->
+      user.tokens = tokens
+      res.render "user", user: user
 
 post = (req, res, next) ->
   username     = req.param "username"
@@ -24,7 +27,8 @@ post = (req, res, next) ->
 
 new_token = (req, res, next) ->
   users.generate_token req.session.user, onerr next, (user) ->
-    res.render "partial_token", token: _.last user.tokens
+    addQR _.last(user.tokens), onerr next, (token) ->
+      res.render "partial_token", token: token
 
 delete_token = (req, res, next) ->
   users.get req.session.user, onerr next, (user) ->
@@ -32,6 +36,13 @@ delete_token = (req, res, next) ->
     user.tokens = _.without user.tokens, req.params.id
     users.insert user, onerr next, ->
       res.end()
+
+addQR = (token, callback) ->
+  qrSvg = ""
+  code = qr.image token, type: "svg"
+  code.on "data", (data) -> qrSvg += data
+  code.on "end", -> callback null, key: token, qr: qrSvg
+  code.on "error", callback
 
 exports.get = get
 exports.post = post
