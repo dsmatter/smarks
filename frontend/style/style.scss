@@ -20,7 +20,7 @@ $red: #ff0000;
 
 // Basic elements
 body {
-	font-family: "PT Serif" Georgia sans-serif;
+	font-family: "PT Serif", Georgia, sans-serif;
 	font-size:  1.1em;
 	background: $body-back-color;
 	color: $main-font-color;
